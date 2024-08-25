@@ -1,0 +1,82 @@
+{
+    "Tacos": {
+        "name": "Tacos",
+        "color": "red",
+        "data": [
+            {"item": "Carne Asada", "price": "S/.18"},
+            {"item": "Pollo a la Plancha", "price": "S/.15"},
+            {"item": "Carnitas", "price": "S/.16"},
+            {"item": "Birria (Barbacoa)", "price": "S/.18"},
+            {"item": "Adobada", "price": "S/.16"},
+            {"item": "Al Pastor", "price": "S/.16"},
+            {
+                "item": "Marinos",
+                "description": "3 tortillas de maiz con langostinos en nuestra salsa especial con cebolla y cilantro",
+                "price": "S/.19"
+            },
+            {
+                "item": "Crunchy",
+                "description": "3 crunchy tacos con carne molida, queso, mozarella, servido con lechuga y pico de gallo",
+                "price": "S/.18"
+            },
+            {
+                "item": "Veggie",
+                "description": "3 tortillas de maiz, champiñones, queso mozarella y lechuga",
+                "price": "S/.17"
+            },
+            {
+                "item": "Plate",
+                "description": "Adiciona a tus tacos arroz rojo, frijoles negros, guacamoles y pico de gallo (SOLO PARA TACOS)",
+                "price": "+S/.6"
+            }
+        ]
+    },
+    "Botanas": {
+        "name": "Botanas",
+        "color": "green",
+        "data":[
+            {
+                "item": "Quesadillas",
+                "description": "Tortillas de harina, queso mozarella, servido con guacamole y sour cream",
+                "price": "S/.14",
+                "extra_meat": [
+                    {"type": "Pollo", "price": "S/.5"},
+                    {"type": "Carne Asada", "price": "S/.6"},
+                    {"type": "Al Pastor", "price": "S/.5"},
+                    {"type": "Adobada", "price": "S/.5"},
+                    {"type": "Birria", "price": "S/.6"}
+                ]
+            },
+            {
+                "item": "Mexican Chips + Salsa",
+                "description": "Tortilla de maiz con salsa roja, guacamole y pico de gallo",
+                "price": "S/.12"
+            },
+            {
+                "item": "Wings BBQ / BBQ Picante",
+                "description": "6 alitas fritas acompañadas de apio, zanahoria y salsa ranch",
+                "price": "S/.14"
+            },
+            {
+                "item": "Wings Mango Habanero",
+                "description": "6 alitas fritas maceradas en nuestra salsa de mango acompañadas de apio, zanahoria y salsa ranch",
+                "price": "S/.14"
+            },
+            {
+                "item": "Wings al Limón",
+                "description": "6 alitas fritas con limón acompañadas de apio, zanahoria y salsa ranch",
+                "price": "S/.14"
+            },
+            {
+                "item": "Tlayuda",
+                "description": "Tortilla de trigo, base de frijoles negros refritos con queso mozarella, elote, lomo fino a la parrilla y aguacate. Acompañado de pico de gallo y guacamole",
+                "price": "S/.30"
+            },
+            {
+                "item": "Supernachos",
+                "description": "Totopos, elote y lomo fino a la parrilla en dos tipos de queso derretido (mozarella y cheddar)",
+                "price": "S/.30"
+            }
+        ]
+    }
+}

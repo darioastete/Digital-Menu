@@ -1,0 +1,54 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+import Logo from "../assets/img/Logo.svg"
+import Cap from "../assets/img/Sombrero.svg"
+import Navbar from "../components/Navbar.astro";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<div class="grid h-screen !overflow-hidden">
+			<div class="nav flex justify-between py-3 px-5 items-center [grid-area: nav]">
+				<picture class="w-40">
+					<img src={Logo.src} alt="">
+				</picture>
+				<div class="text-sm flex flex-col">
+					<img src={Cap.src} alt="" class="absolute right-0 top-0 w-16">
+					<input type="text" placeholder="Buscar" class="p-2 bg-[#F2F2F2] rounded-lg">
+				</div>
+			</div>
+			<div class=" flex items-start [grid-area: sidebar]">
+				<Navbar />
+			</div>
+			<div class="bg-white [grid-area: main] pl-7 flex justify-end overflow-hidden">
+				<slot />
+			</div>
+		</div>
+	</body>
+</html>
+<style>
+.grid {
+	grid-template-columns: minmax(40px, 40px) 1fr;
+	grid-template-rows: 100px 1fr;
+	grid-template-areas: "nav nav"
+	"sidebar main";
+}
+
+.nav {
+	grid-area: nav;
+}
+
+</style>
