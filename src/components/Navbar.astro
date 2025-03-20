@@ -1,48 +1,159 @@
 ---
 import NavIndicator from "../components/icons/NavIndicator.astro";
-
 ---
 
 <script>
-    const items = document.querySelectorAll('.nav-item');
-    const ball = document.querySelector('.ball') as HTMLElement;
+  document.addEventListener("DOMContentLoaded", () => {
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>(".nav-item")
+    );
+    const ball = document.querySelector<HTMLElement>(".ball")!;
+    const navbar = document.getElementById("navbar")! as HTMLElement;
 
-    items.forEach(item => {
-        item.addEventListener('click', (e) => {
-            const target = e.target as HTMLElement;
-            const position = (e.target as HTMLElement).getAttribute('data-position');
-            if (position !== null) {
-                const targetRect = target.getBoundingClientRect();
-                    const containerRect = target.parentElement?.getBoundingClientRect();
-                    if (containerRect) {
-                        const offsetY = targetRect.top - containerRect.top + (targetRect.height / 2) - (ball.getBoundingClientRect().height / 2);
-                        if (ball !== null) {
-                            ball.style.transform = `translateY(-${offsetY-30 > 0 ? offsetY-30 : 0}px)`;
-                        }
-                    }
-                // const positionNumber = Number(position);
-                // (ball as HTMLElement).style.transform = `translateY(-${positionNumber * 86}px)`;
-            }
-        });
+    let animationFrame: number;
+
+    /**
+     * Convierte una cadena "rgb(r, g, b)" en un objeto { r, g, b }.
+     */
+    const rgbToObj = (
+      rgbString: string
+    ): { r: number; g: number; b: number } => {
+      const [r, g, b] = rgbString.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
+      return { r, g, b };
+    };
+
+    /**
+     * Interpola entre dos colores RGB.
+     */
+    const interpolateColor = (
+      start: { r: number; g: number; b: number },
+      end: { r: number; g: number; b: number },
+      factor: number
+    ) => ({
+      r: Math.round(start.r + (end.r - start.r) * factor),
+      g: Math.round(start.g + (end.g - start.g) * factor),
+      b: Math.round(start.b + (end.b - start.b) * factor)
     });
+
+    /**
+     * Transición de color sincronizada con la animación del `ball`.
+     */
+    const animateColorTransition = (
+      startColor: { r: number; g: number; b: number },
+      endColor: { r: number; g: number; b: number },
+      duration = 400
+    ) => {
+      let startTime: number | null = null;
+
+      const step = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+
+        const blendedColor = interpolateColor(startColor, endColor, progress);
+        const finalColor = `rgb(${blendedColor.r}, ${blendedColor.g}, ${blendedColor.b})`;
+
+        navbar.style.backgroundColor = finalColor;
+        ball.style.color = finalColor;
+
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(step);
+        }
+      };
+
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(step);
+    };
+
+    const setQuery = (query: string) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set("q", query);
+      history.pushState({}, "", url.toString());
+      window.dispatchEvent(new Event("pushstate")); // Dispara el evento para que `popstate` lo detecte
+    };
+
+    /**
+     * Maneja el clic en los elementos del menú.
+     */
+    const handleNavItemClick = (event: Event) => {
+      const target = event.target as HTMLElement;
+      const targetColor = target.dataset.color || "rgb(1, 81, 63)"; // Color por defecto
+      setQuery(target.dataset.query!);
+
+      const startColor = rgbToObj(getComputedStyle(navbar).backgroundColor);
+      const endColor = rgbToObj(targetColor);
+
+      // Inicia la transición de color durante el movimiento del ball
+      animateColorTransition(startColor, endColor, 400);
+
+      // Animación del desplazamiento del `ball`
+      const targetRect = target.getBoundingClientRect();
+      const containerRect = target.parentElement?.getBoundingClientRect();
+      if (!containerRect) return;
+
+      const offsetY =
+        targetRect.top -
+        containerRect.top +
+        targetRect.height / 2 -
+        ball.getBoundingClientRect().height / 2;
+
+      ball.style.transform = `translateY(-${Math.max(offsetY - 30, 0)}px)`;
+    };
+
+    // Agregar evento a cada elemento del menú
+    items.forEach((item) => item.addEventListener("click", handleNavItemClick));
+  });
 </script>
-<div class="flex flex-col justify-center items-center rotate-180 text-xs font-medium gap-3 text-white bg-[#AC2B2A] rounded-tl-lg rounded-bl-lg w-full py-6">
-    <div class="ball absolute -left-6 bottom-10 w-10 h-10 rounded-full z-0  text-[#AC2B2A]"><NavIndicator /></div>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="8">Guarniciones</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="7">Postres</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="6">Tacos</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="5">Botanas</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="4">A la carta </span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="3">Ensaladas</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="2">Burritos</span>
-    <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="1">Burguer</span>
+<div
+  id="navbar"
+  class="flex flex-col justify-center items-center rotate-180 text-[12px] font-medium gap-3 rounded-tl-lg rounded-bl-lg w-full py-6 text-white bg-[#01513F]"
+>
+  <div
+    class="ball absolute -left-6 bottom-10 w-10 h-10 rounded-full z-0 text-[#01513F]"
+  >
+    <NavIndicator />
+  </div>
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="8"
+    data-color="rgba(73, 35, 88, 1)"
+    data-query="burritos">Burritos</span
+  >
+  <!-- <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="7" data-color="rgba(1, 81, 63, 1)">Postres</span> -->
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="6"
+    data-color="rgba(73, 35, 88, 1)"
+    data-query="tacos">Tacos</span
+  >
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="5"
+    data-color="rgba(248, 173, 31, 1)"
+    data-query="botanas">Botanas</span
+  >
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="4"
+    data-color="rgba(172, 43, 42, 1)"
+    data-query="a-la-carta">A la carta</span
+  >
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="3"
+    data-color="rgba(246, 160, 35, 1)"
+    data-query="ensaladas">Ensaladas</span
+  >
+  <!-- <span class="[writing-mode:vertical-rl] nav-item z-10" data-position="2" data-color="rgba(185, 38, 69, 1)">Burritos</span> -->
+  <span
+    class="[writing-mode:vertical-rl] nav-item z-10"
+    data-position="1"
+    data-color="rgba(1, 81, 63, 1)"
+    data-query="burguer">Burguer</span
+  >
 </div>
 
 <style>
-    .ball {
-        /* transition: transform .5s cubic-bezier(.68,-0.55,.27,1.55); */
-        transition: transform .4s cubic-bezier(.73, -0.35,.67,1.40)
-        
-        /* transition: transform .3s ease-out; */
-    }
+  .ball {
+    transition: transform 0.4s cubic-bezier(0.73, -0.35, 0.67, 1.4);
+  }
 </style>

@@ -1,15 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
-import Card from "../components/Card.astro";
+// import Card from "../components/Card.astro";
+
+import { menuItems } from "../consts/MenuItem";
+import MenuComponent from "../components/MenuComponent.vue";
 ---
 
-<Layout title="Welcome to Astro.">
-	<main class="flex overflow-x-auto gap-4 px-5">
-		<Card />
-		<Card />
-		<Card />
-		<Card />
-	</main>
-	
+<Layout title="Your Menu | Digital Menu">
+  <main class="flex overflow-x-auto gap-4 px-5">
+    <!-- {menuItems.map((item) => ( -->
+    <!-- 	<Card {...item} /> -->
+    <!-- ))} -->
+    <MenuComponent client:load />
+  </main>
 </Layout>
